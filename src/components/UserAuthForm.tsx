@@ -1,17 +1,39 @@
-import { FC } from 'react';
+'use client';
+
+import { FC, useState } from 'react';
 import { Button } from './ui/Button';
 import { cn } from '@/lib/utils';
+import { signIn } from 'next-auth/react';
+import { Icons } from './Icons';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
-  // We can now pass anything that you normally can pass to a div to this component
-  // Also, we can pass all the props we normally receive from the parent component right into the actual div so we can style this component.
-  // Not only in this component but wherever we render it as well. Just as if this was a div.
-  console.log(`${cn('flex justify-center', className)}`);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const loginWithGoogle = async () => {
+    setIsLoading(true);
+
+    try {
+      await signIn('google');
+    } catch (error) {
+      // toast notification
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={cn('flex justify-center', className)} {...props}>
-      <Button>Google</Button>
+      <Button
+        onClick={loginWithGoogle}
+        isLoading={isLoading}
+        size="sm"
+        className="w-full"
+      >
+        {isLoading ? null : <Icons.google className="h-4 w-4 mr-2" />}
+        Google
+      </Button>
     </div>
   );
 };
