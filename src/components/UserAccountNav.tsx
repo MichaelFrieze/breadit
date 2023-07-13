@@ -44,9 +44,6 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
 
         <DropdownMenuSeparator />
 
-        {/* asChild applies the child Link component to the parent so you can also click the parent instead of just child (Feed text) */}
-        {/* Simply put, asChild delegates the rendering of a component to its single child element. */}
-        {/* https://medium.com/@bryanmylee/aschild-in-react-svelte-vue-and-solid-for-render-delegation-645c73650ced */}
         <DropdownMenuItem asChild>
           <Link href="/">Feed</Link>
         </DropdownMenuItem>
