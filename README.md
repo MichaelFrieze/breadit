@@ -1,3 +1,3 @@
 # breadit
 
-[Tutorial](https://www.youtube.com/watch?v=mSUKMfmLAt0&t=7800s)
+[Tutorial](https://youtu.be/mSUKMfmLAt0?t=8592)
