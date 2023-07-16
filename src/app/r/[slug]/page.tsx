@@ -1,3 +1,4 @@
+import MiniCreatePost from '@/components/MiniCreatePost';
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -33,9 +34,13 @@ const SubredditPage = async ({ params }: PageProps) => {
   if (!subreddit) return notFound();
 
   return (
-    <div>
-      <h1>page</h1>
-    </div>
+    <>
+      <h1 className="font-bold text-3xl md:text-4xl h-14">
+        r/{subreddit.name}
+      </h1>
+
+      <MiniCreatePost session={session} />
+    </>
   );
 };
 
