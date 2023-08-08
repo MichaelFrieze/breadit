@@ -1,6 +1,7 @@
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { SubredditSubscriptionValidator } from '@/lib/validators/subreddit';
+import { z } from 'zod';
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +12,6 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-
     const { subredditId } = SubredditSubscriptionValidator.parse(body);
 
     const subscriptionExists = await db.subscription.findFirst({
@@ -33,5 +33,15 @@ export async function POST(req: Request) {
         userId: session.user.id,
       },
     });
-  } catch (error) {}
+
+    return new Response(subredditId);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response('Invalid request data passed', { status: 422 });
+    }
+
+    return new Response('Could not subscribe, please try again later', {
+      status: 500,
+    });
+  }
 }

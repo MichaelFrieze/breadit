@@ -4,7 +4,9 @@ import { FC } from 'react';
 import { Button } from './ui/Button';
 import { useMutation } from '@tanstack/react-query';
 import { SubscribeToSubredditPayload } from '@/lib/validators/subreddit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { useCustomToasts } from '@/hooks/use-custom-toasts';
+import { toast } from '@/hooks/use-toast';
 
 interface SubscribeLeaveToggleProps {
   subredditId: string;
@@ -14,6 +16,7 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
   subredditId,
 }) => {
   const isSubscribed = false;
+  const { loginToast } = useCustomToasts();
 
   const {} = useMutation({
     mutationFn: async () => {
@@ -23,6 +26,19 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
 
       const { data } = await axios.post('/api/subreddit/subscribe', payload);
       return data as string;
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
+      return toast({
+        title: 'There was a problem',
+        description: 'Something went wrong, please try again.',
+        variant: 'destructive',
+      });
     },
   });
 
