@@ -60,11 +60,22 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
           // Add a ref to the last post in the list
           return (
             <li key={post.id} ref={ref}>
-              <Post />
+              <Post
+                post={post}
+                commentAmt={post.comments.length}
+                subredditName={post.subreddit.name}
+              />
             </li>
           );
         } else {
-          return <Post key={post.id} />;
+          return (
+            <Post
+              post={post}
+              commentAmt={post.comments.length}
+              subredditName={post.subreddit.name}
+              key={post.id}
+            />
+          );
         }
       })}
     </ul>
