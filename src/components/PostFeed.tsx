@@ -1,13 +1,14 @@
 'use client';
 
+import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config';
 import { ExtendedPost } from '@/types/db';
-import { FC, useRef } from 'react';
 import { useIntersection } from '@mantine/hooks';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import { Loader2 } from 'lucide-react';
+import { FC, useEffect, useRef } from 'react';
 import Post from './Post';
+import { useSession } from 'next-auth/react';
 
 interface PostFeedProps {
   initialPosts: ExtendedPost[];
@@ -41,6 +42,12 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
     }
   );
 
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage(); // Load more posts when the last post comes into view
+    }
+  }, [entry, fetchNextPage]);
+
   const posts = data?.pages.flatMap((page) => page) ?? initialPosts;
 
   return (
@@ -64,20 +71,30 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
                 post={post}
                 commentAmt={post.comments.length}
                 subredditName={post.subreddit.name}
+                votesAmt={votesAmt}
+                currentVote={currentVote}
               />
             </li>
           );
         } else {
           return (
             <Post
+              key={post.id}
               post={post}
               commentAmt={post.comments.length}
               subredditName={post.subreddit.name}
-              key={post.id}
+              votesAmt={votesAmt}
+              currentVote={currentVote}
             />
           );
         }
       })}
+
+      {isFetchingNextPage && (
+        <li className="flex justify-center">
+          <Loader2 className="w-6 h-6 text-zinc-500 animate-spin" />
+        </li>
+      )}
     </ul>
   );
 };
