@@ -43,13 +43,11 @@ const PostVoteClient = ({
       await axios.patch('/api/subreddit/post/vote', payload);
     },
     onError: (err, voteType) => {
-      // if (voteType === 'UP') setVotesAmt((prev) => prev - 1);
-      // else setVotesAmt((prev) => prev + 1);
-      setVotesAmt(initialVotesAmt);
+      if (voteType === 'UP') setVotesAmt((prev) => prev - 1);
+      else setVotesAmt((prev) => prev + 1);
 
       // reset current vote
-      // setCurrentVote(prevVote);
-      setCurrentVote(initialVote);
+      setCurrentVote(prevVote);
 
       if (err instanceof AxiosError) {
         if (err.response?.status === 401) {
