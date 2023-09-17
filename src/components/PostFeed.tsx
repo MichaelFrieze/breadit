@@ -31,6 +31,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
         (!!subredditName ? `&subredditName=${subredditName}` : '');
 
       const { data } = await axios.get(query);
+
       return data as ExtendedPost[];
     },
 
