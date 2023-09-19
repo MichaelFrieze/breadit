@@ -1,13 +1,13 @@
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { PostValidator } from '@/lib/validators/post';
+import { CommentValidator } from '@/lib/validators/comment';
 import { z } from 'zod';
 
-export async function POST(req: Request) {
+export async function PATCH(req: Request) {
   try {
     const body = await req.json();
 
-    const { title, content, subredditId } = PostValidator.parse(body);
+    const { postId, text, replyToId } = CommentValidator.parse(body);
 
     const session = await getAuthSession();
 
@@ -15,24 +15,13 @@ export async function POST(req: Request) {
       return new Response('Unauthorized', { status: 401 });
     }
 
-    // verify user is subscribed to passed subreddit id
-    const subscription = await db.subscription.findFirst({
-      where: {
-        subredditId,
-        userId: session.user.id,
-      },
-    });
-
-    if (!subscription) {
-      return new Response('Subscribe to post', { status: 403 });
-    }
-
-    await db.post.create({
+    // if no existing vote, create a new vote
+    await db.comment.create({
       data: {
-        title,
-        content,
+        text,
+        postId,
         authorId: session.user.id,
-        subredditId,
+        replyToId,
       },
     });
 

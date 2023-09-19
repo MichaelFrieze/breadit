@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { subredditId } = SubredditSubscriptionValidator.parse(body);
 
+    // check if user has already subscribed or not
     const subscriptionExists = await db.subscription.findFirst({
       where: {
         subredditId,
@@ -22,25 +23,15 @@ export async function POST(req: Request) {
     });
 
     if (!subscriptionExists) {
-      return new Response('You are not subscribed to this subreddit.', {
-        status: 400,
-      });
+      return new Response(
+        "You've not been subscribed to this subreddit, yet.",
+        {
+          status: 400,
+        }
+      );
     }
 
-    // check if user is the creator of the subreddit
-    const userCreatedSubreddit = await db.subreddit.findFirst({
-      where: {
-        id: subredditId,
-        creatorId: session.user.id,
-      },
-    });
-
-    if (userCreatedSubreddit) {
-      return new Response('You cannot unsubscribe to your own subreddit.', {
-        status: 400,
-      });
-    }
-
+    // create subreddit and associate it with the user
     await db.subscription.delete({
       where: {
         userId_subredditId: {
@@ -52,12 +43,14 @@ export async function POST(req: Request) {
 
     return new Response(subredditId);
   } catch (error) {
+    error;
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request data passed', { status: 422 });
+      return new Response(error.message, { status: 400 });
     }
 
-    return new Response('Could not unsubscribe, please try again later', {
-      status: 500,
-    });
+    return new Response(
+      'Could not unsubscribe from subreddit at this time. Please try later',
+      { status: 500 }
+    );
   }
 }
