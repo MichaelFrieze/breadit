@@ -40,17 +40,6 @@ const SubRedditPostPage = async ({ params }: SubRedditPostPageProps) => {
 
   if (!post && !cachedPost) return notFound();
 
-  const getDataFunc = async () => {
-    return await db.post.findUnique({
-      where: {
-        id: params.postId,
-      },
-      include: {
-        votes: true,
-      },
-    });
-  };
-
   return (
     <div>
       <div className="h-full flex flex-col sm:flex-row items-center sm:items-start justify-between">
@@ -58,8 +47,16 @@ const SubRedditPostPage = async ({ params }: SubRedditPostPageProps) => {
           {/* @ts-expect-error server component */}
           <PostVoteServer
             postId={post?.id ?? cachedPost.id}
-            initialVote={post ? undefined : cachedPost.currentVote}
-            getData={post ? getDataFunc : undefined}
+            getData={async () => {
+              return await db.post.findUnique({
+                where: {
+                  id: params.postId,
+                },
+                include: {
+                  votes: true,
+                },
+              });
+            }}
           />
         </Suspense>
 
