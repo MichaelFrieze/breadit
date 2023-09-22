@@ -5,7 +5,7 @@ import { PostVoteValidator } from '@/lib/validators/vote';
 import { CachedPost } from '@/types/redis';
 import { z } from 'zod';
 
-const CACHE_AFTER_UPVOTES = 0;
+const CACHE_AFTER_UPVOTES = 1;
 
 export async function PATCH(req: Request) {
   try {
@@ -62,7 +62,7 @@ export async function PATCH(req: Request) {
 
         if (votesAmt >= CACHE_AFTER_UPVOTES) {
           const cachePayload: CachedPost = {
-            authorUsername: post.author.name ?? '',
+            authorUsername: post.author.username ?? '',
             content: JSON.stringify(post.content),
             id: post.id,
             title: post.title,
@@ -98,7 +98,7 @@ export async function PATCH(req: Request) {
 
       if (votesAmt >= CACHE_AFTER_UPVOTES) {
         const cachePayload: CachedPost = {
-          authorUsername: post.author.name ?? '',
+          authorUsername: post.author.username ?? '',
           content: JSON.stringify(post.content),
           id: post.id,
           title: post.title,
@@ -130,7 +130,7 @@ export async function PATCH(req: Request) {
 
     if (votesAmt >= CACHE_AFTER_UPVOTES) {
       const cachePayload: CachedPost = {
-        authorUsername: post.author.name ?? '',
+        authorUsername: post.author.username ?? '',
         content: JSON.stringify(post.content),
         id: post.id,
         title: post.title,

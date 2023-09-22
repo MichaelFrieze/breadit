@@ -5,7 +5,7 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 
-const SignInPage: FC = () => {
+const page: FC = () => {
   return (
     <div className="absolute inset-0">
       <div className="h-full max-w-2xl mx-auto flex flex-col items-center justify-center gap-20">
@@ -26,4 +26,4 @@ const SignInPage: FC = () => {
   );
 };
 
-export default SignInPage;
+export default page;
