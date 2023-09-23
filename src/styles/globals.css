@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* body {
+body {
   min-height: fill-available;
   min-height: -webkit-fill-available;
 }
 html {
   height: fill-available;
   height: -webkit-fill-available;
-} */
+}
 
 @layer base {
   :root {
