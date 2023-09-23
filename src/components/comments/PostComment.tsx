@@ -5,7 +5,7 @@ import { formatTimeToNow } from '@/lib/utils';
 import { CommentRequest } from '@/lib/validators/comment';
 import { Comment, CommentVote, User } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { FC, useRef, useState } from 'react';
@@ -16,6 +16,7 @@ import { Label } from '../ui/Label';
 import { Textarea } from '../ui/Textarea';
 import { toast } from '../../hooks/use-toast';
 import { useSession } from 'next-auth/react';
+import { useCustomToasts } from '@/hooks/use-custom-toasts';
 
 type ExtendedComment = Comment & {
   votes: CommentVote[];
@@ -36,6 +37,7 @@ const PostComment: FC<PostCommentProps> = ({
   postId,
 }) => {
   const { data: session } = useSession();
+  const { loginToast } = useCustomToasts();
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const commentRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState<string>(`@${comment.author.username} `);
@@ -55,7 +57,21 @@ const PostComment: FC<PostCommentProps> = ({
       return data;
     },
 
-    onError: () => {
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
+      if (err instanceof AxiosError) {
+        return toast({
+          title: 'Something went wrong.',
+          description: err?.response?.data[0]?.message as string,
+          variant: 'destructive',
+        });
+      }
+
       return toast({
         title: 'Something went wrong.',
         description: "Comment wasn't created successfully. Please try again.",

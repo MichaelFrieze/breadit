@@ -40,6 +40,14 @@ const CreateComment: FC<CreateCommentProps> = ({ postId, replyToId }) => {
         }
       }
 
+      if (err instanceof AxiosError) {
+        return toast({
+          title: 'Something went wrong.',
+          description: err?.response?.data[0]?.message as string,
+          variant: 'destructive',
+        });
+      }
+
       return toast({
         title: 'Something went wrong.',
         description: "Comment wasn't created successfully. Please try again.",
