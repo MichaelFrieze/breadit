@@ -79,3 +79,9 @@
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
+
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    height: -webkit-fill-available;
+  }
+}
