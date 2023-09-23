@@ -101,7 +101,7 @@ model Post {
 
 model Comment {
   id        String   @id @default(cuid())
-  text      String   @db.MediumText
+  text      String
   createdAt DateTime @default(now())
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
