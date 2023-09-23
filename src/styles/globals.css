@@ -82,6 +82,6 @@
 
 @supports (-webkit-touch-callout: none) {
   .min-h-screen {
-    height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
   }
 }
