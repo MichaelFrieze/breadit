@@ -20,7 +20,7 @@ const Navbar = async () => {
         </Link>
 
         {/* search bar */}
-        <SearchBar />
+        {/* <SearchBar /> */}
 
         {/* actions */}
         {session?.user ? (
